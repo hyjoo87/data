@@ -15,10 +15,15 @@ DATA_URL = "https://raw.githubusercontent.com/hyjoo87/data/refs/heads/main/strok
 SAVE_DIR = "내_기록"
 SAVE_FILE = os.path.join(SAVE_DIR, "data_info_records.json")
 
-# 2. 저장용 폴더 생성 및 저장/불러오기 함수
+# 2. 저장용 폴더 생성 및 안전장치 추가 (FileExistsError 방지)
 def ensure_dir():
-    if not os.path.exists(SAVE_DIR):
-        os.makedirs(SAVE_DIR)
+    if os.path.exists(SAVE_DIR):
+        if not os.path.isdir(SAVE_DIR):
+            # 만약 '내_기록'이 폴더가 아니라 파일로 존재한다면 삭제 후 폴더 생성
+            os.remove(SAVE_DIR)
+            os.makedirs(SAVE_DIR, exist_ok=True)
+    else:
+        os.makedirs(SAVE_DIR, exist_ok=True)
 
 def load_user_records():
     ensure_dir()
